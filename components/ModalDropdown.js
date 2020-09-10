@@ -76,33 +76,36 @@ export default class ModalDropdown extends Component {
 
     this._button = null;
     this._buttonFrame = null;
-    this._nextValue = null;
-    this._nextIndex = null;
 
     this.state = {
       accessible: !!props.accessible,
       loading: !props.options,
       showDropdown: false,
       buttonText: props.defaultValue,
-      selectedIndex: props.defaultIndex
+      selectedIndex: props.defaultIndex,
+      _nextIndex:null,
+      _nextValue:null
     };
+
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    let {buttonText, selectedIndex} = this.state;
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let {buttonText, selectedIndex} = prevState;
     const {defaultIndex, defaultValue, options} = nextProps;
-    buttonText = this._nextValue == null ? buttonText : this._nextValue;
-    selectedIndex = this._nextIndex == null ? selectedIndex : this._nextIndex;
+    buttonText = prevState._nextValue == null ? buttonText : prevState._nextValue;
+    selectedIndex = prevState._nextIndex == null ? selectedIndex : prevState._nextIndex;
     if (selectedIndex < 0) {
       selectedIndex = defaultIndex;
       if (selectedIndex < 0) {
         buttonText = defaultValue;
       }
     }
-    this._nextValue = null;
-    this._nextIndex = null;
+    prevState._nextValue = null;
+    prevState._nextIndex = null;
 
-    this.setState({
+    return ({
       loading: !options,
       buttonText,
       selectedIndex
@@ -153,12 +156,11 @@ export default class ModalDropdown extends Component {
       value = renderButtonText ? renderButtonText(options[idx]) : options[idx].toString();
     }
 
-    this._nextValue = value;
-    this._nextIndex = idx;
-
     this.setState({
       buttonText: value,
-      selectedIndex: idx
+      selectedIndex: idx,
+      _nextValue: value,
+      _nextIndex:idx
     });
   }
 
@@ -374,11 +376,11 @@ export default class ModalDropdown extends Component {
     if (!onSelect || onSelect(rowID, rowData) !== false) {
       highlightRow(sectionID, rowID);
       const value = renderButtonText && renderButtonText(rowData) || rowData.toString();
-      this._nextValue = value;
-      this._nextIndex = rowID;
       this.setState({
         buttonText: value,
-        selectedIndex: rowID
+        selectedIndex: rowID,
+        _nextIndex: rowID,
+        _nextValue: value
       });
     }
     if (!onDropdownWillHide || onDropdownWillHide() !== false) {
