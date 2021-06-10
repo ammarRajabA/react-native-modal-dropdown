@@ -187,7 +187,7 @@
                <Text style={[styles.buttonText, textStyle]}
                      numberOfLines={1}
                >
-                 {buttonText}
+                 {this.props.displayValue || buttonText}
                </Text>
              </View>
            )
