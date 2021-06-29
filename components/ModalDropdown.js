@@ -299,6 +299,7 @@
                  automaticallyAdjustContentInsets={false}
                  showsVerticalScrollIndicator={showsVerticalScrollIndicator}
                  keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+                 alwaysBounceVertical={false}
        />
      );
    }
